@@ -1,4 +1,4 @@
-require "just/version"
-require 'just/router'
+require 'just/version'
+require 'just/application'
 require 'just/controller'
-require 'pry'
+require 'just/router'

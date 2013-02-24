@@ -8,29 +8,16 @@ module Just
       @regex_routes ||= {}
     end
 
-    def store_route(pattern, &block)
+    def store_route(http_method, pattern, &block)
       if pattern.is_a?(String)
-        string_routes[pattern] = lambda { block.call }
+        (string_routes[http_method]||={})[pattern] = lambda { |params| block.call(params) }
       elsif pattern.is_a?(Regexp)
-        regex_routes[pattern] = lambda { |matches| block.call(matches) }
+        (regex_routes[http_method] ||= {})[pattern] = lambda { |matches| block.call(matches) }
       end
     end
 
-    def route(path)
-      if string_routes[path]
-        string_routes[path].call
-      else
-        pattern, route = regex_routes.find { |key, route| key.match(path) }
-        return route.call(pattern.match(path)) if route
-      end
-    end
-
-    def get(pattern, &block)
-      if block_given?
-        store_route(pattern, &block)
-      else
-        route(pattern)
-      end
+    [:get, :post].each do |http_method|
+      define_method http_method, ->(pattern, params = {}, &block) { store_route(http_method, pattern, &block)}
     end
   end
 end

@@ -10,6 +10,10 @@ class PostsController
   def show
     "hello #{params[:name]}"
   end
+
+  def create
+    "Saving #{params[:post][:title]}"
+  end
 end
 
 class Router
@@ -21,14 +25,26 @@ class Router
   get /posts\/(?<name>[[:alnum:]]*)/ do |matches|
     PostsController.new(:route_params => matches).show
   end
+
+  post '/posts' do |params|
+    PostsController.new(:params => params).create
+  end
+end
+
+class App
+  extend Just::Application
 end
 
 class RouterTest < Test::Unit::TestCase
   def test_basic_get
-    assert_equal 'hello!', Router.get('/')
+    assert_equal 'hello!', App.get('/')
   end
 
   def test_get_with_params
-    assert_equal 'hello Paul', Router.get('/posts/Paul')
+    assert_equal 'hello Paul', App.get('/posts/Paul')
+  end
+
+  def test_post
+    assert_equal 'Saving Paul', App.post('/posts', {:post => {:title => 'Paul'}})
   end
 end
