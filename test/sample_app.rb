@@ -1,24 +1,4 @@
 module SampleApp
-  class PostsController
-    include Just::Controller
-
-    def index
-      'hello!'
-    end
-
-    def show
-      "hello #{params[:name]}"
-    end
-
-    def create
-      "Creating #{params[:post][:title]}"
-    end
-
-    def update
-      "Updating #{params[:id]} with Title #{params[:post][:title]}"
-    end
-  end
-
   class Router
     extend Just::Router
     get '/' do
@@ -41,5 +21,25 @@ module SampleApp
   class App
     extend Just::Application
     router Router
+  end
+
+  class PostsController
+    include Just::Controller
+
+    def index
+      'hello!'
+    end
+
+    def show
+      "hello #{params[:name]}"
+    end
+
+    def create
+      "Creating #{params[:post][:title]}"
+    end
+
+    def update
+      "Updating #{params[:id]} with Title #{params[:post][:title]}"
+    end
   end
 end
