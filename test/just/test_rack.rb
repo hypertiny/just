@@ -1,9 +1,18 @@
+require "rack/test"
+
 require 'test_helper'
 require 'sample_app'
 
-class RouterTest < Test::Unit::TestCase
+class RackTest < Test::Unit::TestCase
+  include Rack::Test::Methods
+
+  def app
+    SampleApp::App
+  end
+
   def test_basic_get
-    assert_equal 'hello!', SampleApp::App.get('/')
+    get('/')
+    assert_equal 'hello!', last_response.body
   end
 
   def test_get_with_url_params

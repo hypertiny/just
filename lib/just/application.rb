@@ -1,6 +1,16 @@
 module Just
   module Application
-    def router(router_class = ::Router)
+    def call(env)
+      request = Rack::Request.new(env)
+      env = request.env
+      http_method = env['REQUEST_METHOD'].downcase.to_sym
+      path = env['PATH_INFO']
+      params = request.params
+      output = StringIO.new(self.send(http_method, path, params))
+      [200, {'Content-Type'=>'text/html'}, output]
+    end
+
+    def router(router_class = nil)
       @router ||= router_class
     end
 
