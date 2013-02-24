@@ -1,6 +1,5 @@
 module Just
   module Router
-
     def string_routes
       @string_routes ||= {}
     end
