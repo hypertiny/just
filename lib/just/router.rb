@@ -16,7 +16,7 @@ module Just
       end
     end
 
-    [:get, :post].each do |http_method|
+    Just::HTTP_VERBS.each do |http_method|
       define_method http_method, ->(pattern, params = {}, &block) { store_route(http_method, pattern, &block)}
     end
   end
