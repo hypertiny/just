@@ -18,7 +18,6 @@ module SampleApp
         def to_html
           "hello #{params[:name]}"
         end
-
       end
 
       class Create
@@ -29,7 +28,7 @@ module SampleApp
         validates_presence_of :title
 
         def to_html
-          "Creating #{title}"
+          ERB.new("Creating <%= title %>").result(binding)
         end
       end
     end
