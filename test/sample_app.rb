@@ -1,4 +1,40 @@
 module SampleApp
+
+  class Post
+    include Virtus
+
+    module Views
+      class Index
+        def to_html
+          'hello!'
+        end
+      end
+
+      class Show
+        include Virtus
+        attribute :post, Post
+        attribute :params
+
+        def to_html
+          "hello #{params[:name]}"
+        end
+
+      end
+
+      class Create
+        include Just::View
+        include ActiveModel::Validations
+        include Virtus
+        attribute :title
+        validates_presence_of :title
+
+        def to_html
+          "Creating #{title}"
+        end
+      end
+    end
+  end
+
   class Router
     extend Just::Router
     get '/' do
@@ -27,15 +63,20 @@ module SampleApp
     include Just::Controller
 
     def index
-      'hello!'
+      Post::Views::Index.new.to_html
     end
 
     def show
-      "hello #{params[:name]}"
+      Post::Views::Show.new(:params => params).to_html
     end
 
     def create
-      "Creating #{params[:post][:title]}"
+      view = Post::Views::Create.new(params[:post])
+      if view.valid?
+        view.to_html
+      else
+        'Invalid'
+      end
     end
 
     def update
